@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server
+  namespace: gateway
+data:
+{{ (.Files.Glob "server/*").AsConfig | indent 2 }}

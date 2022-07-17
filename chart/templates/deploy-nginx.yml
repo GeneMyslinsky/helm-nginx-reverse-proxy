@@ -1,0 +1,56 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: gateway
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: 823997125603.dkr.ecr.us-east-1.amazonaws.com/nginx-gateway:a1
+        env:
+          - name: NGINX_WATCH_PATHS
+            value: "/etc/nginx/proxy"
+        ports:
+          - containerPort: 80
+            name: http
+          - containerPort: 443
+            name: tls
+          - containerPort: 8080
+            name: hc
+        resources:
+          requests:
+            memory: "0Mi"
+          limits:
+            cpu: "0m"
+            memory: "0Mi"
+        volumeMounts:
+        - mountPath: /etc/nginx/proxy/
+          name: proxy
+        - mountPath: /etc/nginx/tls/
+          name: tls
+        - mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          name: server
+      volumes:
+      - name: server
+        configMap:
+          name: server
+      - name: proxy
+        configMap:
+          name: proxy
+      - name: tls
+        configMap:
+          name: tls
+

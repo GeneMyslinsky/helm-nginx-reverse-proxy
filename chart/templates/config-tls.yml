@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tls
+  namespace: gateway
+data:
+{{ (.Files.Glob "tls/*").AsConfig | indent 2 }}
